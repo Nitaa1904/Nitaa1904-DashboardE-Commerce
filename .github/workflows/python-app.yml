@@ -1,4 +1,4 @@
-name: Streamlit CI
+name: Dashboard E-Commerce
 
 on:
   push:
