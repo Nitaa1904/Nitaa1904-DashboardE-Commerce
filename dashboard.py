@@ -1,9 +1,11 @@
 import pandas as pd
+from pandas import DataFrame
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 from babel.numbers import format_currency
+import matplotlib.cm as cm
 sns.set(style='dark')
 
 
@@ -13,7 +15,7 @@ def create_customer_profile_df(df):
     return customer_profile
 
 # Helper function untuk Pola Pembelian Harian
-def create_daily_orders_df(df):
+def create_daily_orders_df(df: DataFrame) -> DataFrame:
     df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
     df['total_price'] = df.groupby('order_id')['price'].transform('sum')
     daily_orders_df = df.resample(rule='D', on='order_purchase_timestamp').agg({
@@ -27,18 +29,18 @@ def create_daily_orders_df(df):
     return daily_orders_df
 
 # Helper function untuk Produk Paling Laris
-def create_top_products_df(df):
+def create_top_products_df(df: DataFrame) -> DataFrame:
     top_products = df.groupby(['product_category_name', 'product_id']).agg({'order_id': 'count', 'price': 'mean', 'freight_value': 'mean'}).reset_index()
     top_products = top_products.sort_values('order_id', ascending=False).head(10)
     return top_products
 
 # Helper function untuk Kepuasan Pelanggan
-def create_customer_satisfaction_df(df):
+def create_customer_satisfaction_df(df: DataFrame) -> DataFrame:
     customer_satisfaction = df.groupby('review_score').size().reset_index(name='order_id')
     return customer_satisfaction
 
 # Helper function untuk Loyalitas Pelanggan
-def create_rfm_df(df):
+def create_rfm_df(df: DataFrame) -> DataFrame:
     df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
     df['total_price'] = df.groupby('order_id')['price'].transform('sum')
     rfm_df = df.groupby(by="customer_id", as_index=False).agg({
@@ -120,11 +122,15 @@ st.pyplot(fig)
 st.header("Top 10 Produk Paling Laris")
 st.write("")  # Add some whitespace
 
+colors = cm.get_cmap("Purples")(np.linspace(0, 1, len(top_products)))
 fig, ax = plt.subplots(figsize=(10, 6))
-ax.pie(top_products['order_id'], labels=top_products['product_category_name'], autopct='%1.1f%%', startangle=90, colors=plt.cm.Purples(np.linspace(0, 1, len(top_products))))
-ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-ax.set_title("Top 10 Produk Paling Laris")
-st.pyplot(fig)
+ax.pie(
+    top_products['order_id'],
+    labels=top_products['product_category_name'].astype(str).tolist(),
+    autopct='%1.1f%%',
+    startangle=90,
+    colors=colors
+)
 
 # Top 10 Kota dengan Jumlah Pelanggan Terbanyak
 st.header("Top 10 Kota dengan Jumlah Pelanggan Terbanyak")
