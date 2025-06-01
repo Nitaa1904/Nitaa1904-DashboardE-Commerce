@@ -118,7 +118,41 @@ streamlit run dashboard.py
 
 > 🧼 **Tips**: Tambahkan `venv/`, `main-ds/`, atau `myenv/` ke file `.gitignore`.
 
+
 ---
+
+## ✅ Unit Testing dengan Pytest
+Install pytest jika belum:
+
+```bash
+pip install pytest
+```
+
+Jalankan perintah berikut untuk mengeksekusi semua test yang ada:
+
+```bash
+pytest
+```
+
+---
+## ✅ Type Checking dengan Mypy
+
+Install mypy dan tipe stub yang diperlukan:
+
+```bash
+pip install mypy pandas-stubs types-seaborn
+```
+
+Jalankan pemeriksaan tipe dengan perintah:
+
+```bash
+mypy dashboard.py --ignore-missing-imports
+```
+Gunakan opsi --ignore-missing-imports untuk menghindari error dari modul yang belum memiliki stub tipe.
+
+
+---
+
 
 ## 📝 Catatan
 
