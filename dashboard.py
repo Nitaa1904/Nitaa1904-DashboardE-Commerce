@@ -16,29 +16,18 @@ def create_customer_profile_df(df):
     return customer_profile
 
 # Helper function untuk Pola Pembelian Harian
-def create_daily_orders_df(df: pd.DataFrame) -> pd.DataFrame:
-    if 'order_purchase_timestamp' not in df.columns:
-        raise KeyError("The required column 'order_purchase_timestamp' is missing from the DataFrame.")
-    
-    df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'], errors='coerce')
-    
-    if df['order_purchase_timestamp'].isnull().any():
-        raise ValueError("Some values in 'order_purchase_timestamp' could not be converted to datetime.")
-    
+def create_daily_orders_df(df: DataFrame) -> DataFrame:
+    df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
     df['total_price'] = df.groupby('order_id')['price'].transform('sum')
-    
     daily_orders_df = df.resample(rule='D', on='order_purchase_timestamp').agg({
         "order_id": "nunique",
         "total_price": "sum"
     }).reset_index()
-    
     daily_orders_df.rename(columns={
         "order_id": "order_count",
         "total_price": "revenue"
     }, inplace=True)
-    
     return daily_orders_df
-
 
 # Helper function untuk Produk Paling Laris
 def create_top_products_df(df: DataFrame) -> DataFrame:

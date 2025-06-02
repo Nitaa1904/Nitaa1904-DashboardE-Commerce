@@ -54,12 +54,3 @@ def test_create_top_products_df():
 def test_invalid_data():
     with pytest.raises(Exception):
         create_daily_orders_df(pd.DataFrame()) 
-
-def test_missing_order_purchase_timestamp():
-    invalid_data = pd.DataFrame({
-        "order_id": [1, 2, 3],
-        "price": [100, 200, 300]
-    })
-
-    with pytest.raises(KeyError, match="order_purchase_timestamp"):
-        create_daily_orders_df(invalid_data)

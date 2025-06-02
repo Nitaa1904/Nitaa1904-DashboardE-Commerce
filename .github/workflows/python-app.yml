@@ -2,36 +2,39 @@ name: Dashboard E-Commerce
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-cov pylint
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pylint
 
-      - name: Validate files
-        run: |
-          python -m py_compile dashboard.py
-          test -f requirements.txt
+    - name: Validate files
+      run: |
+        python -m py_compile dashboard.py
+        test -f requirements.txt
 
-      - name: Run tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-        run: |
-          pytest tests/
+    - name: Run unit tests
+      run: |
+        pytest tests/ --cov=.
+
+    
+
+
+        
