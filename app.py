@@ -61,19 +61,24 @@ def create_rfm_df(df: DataFrame) -> DataFrame:
 
 # Memuat data dari file CSV yang telah dibersihkan
 url = "https://drive.google.com/uc?export=download&id=1AlcDH1ihdMZh0yJhdlh3b3m4q9GYM3tQ"
-df = pd.read_csv(url)
-all_df = df.copy()
+try:
+    df = pd.read_csv(url)
+except Exception as e:
+    st.error(f"Gagal memuat data: {e}")
+    st.stop()
+
+
 
 # Mendefinisikan kolom yang berisi tipe data datetime
 datetime_columns = ["order_purchase_timestamp", "order_delivered_customer_date", "order_estimated_delivery_date"]
 # Mengurutkan data berdasarkan tanggal pesanan
-all_df.sort_values(by="order_purchase_timestamp", inplace=True)
-all_df.reset_index(drop=True, inplace=True)
+df.sort_values(by="order_purchase_timestamp", inplace=True)
+df.reset_index(drop=True, inplace=True)
 # Mengonversi kolom datetime menjadi tipe data datetime
 for column in datetime_columns:
-    all_df[column] = pd.to_datetime(all_df[column], errors='coerce')
+    df[column] = pd.to_datetime(df[column], errors='coerce')
 # Verifikasi hasil konversi
-print(all_df[datetime_columns].head())
+print(df[datetime_columns].head())
 
 
 # Langkah 3: Menambahkan widget date input di sidebar
@@ -82,12 +87,12 @@ st.sidebar.title("Nitaries Collection")
 st.sidebar.image("2-removebg-preview.png", width=150)
 st.write("")  # Add some whitespace
 st.sidebar.write("Pilih Tanggal")
-start_date = st.sidebar.date_input("Tanggal Mulai", all_df["order_purchase_timestamp"].min().date())
-end_date = st.sidebar.date_input("Tanggal Akhir", all_df["order_purchase_timestamp"].max().date())
+start_date = st.sidebar.date_input("Tanggal Mulai", df["order_purchase_timestamp"].min().date())
+end_date = st.sidebar.date_input("Tanggal Akhir", df["order_purchase_timestamp"].max().date())
 
 # Langkah 4: Memfilter data berdasarkan tanggal yang dipilih
-filtered_df = all_df[(all_df["order_purchase_timestamp"].dt.date >= start_date) & 
-                     (all_df["order_purchase_timestamp"].dt.date <= end_date)]
+filtered_df = df[(df["order_purchase_timestamp"].dt.date >= start_date) & 
+                     (df["order_purchase_timestamp"].dt.date <= end_date)]
 
 # Langkah 5: Membuat DataFrame yang dibutuhkan untuk visualisasi data
 customer_profile = create_customer_profile_df(filtered_df)
