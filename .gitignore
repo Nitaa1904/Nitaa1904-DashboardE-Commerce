@@ -3,6 +3,7 @@ venv/
 myenv/
 .env/
 *.env
+main-ds
 
 # Ignore typical Python cache and build files
 _pycache_/
