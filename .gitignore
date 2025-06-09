@@ -12,3 +12,5 @@ _pycache_/
 
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+all_data.csv
