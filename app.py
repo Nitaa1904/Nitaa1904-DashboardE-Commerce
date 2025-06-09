@@ -60,7 +60,8 @@ def create_rfm_df(df: DataFrame) -> DataFrame:
 
 
 # Memuat data dari file CSV yang telah dibersihkan
-all_df = pd.read_csv("all_data.csv")
+url = "https://drive.google.com/uc?export=download&id=1AlcDH1ihdMZh0yJhdlh3b3m4q9GYM3tQ"
+df = pd.read_csv(url)
 
 # Mendefinisikan kolom yang berisi tipe data datetime
 datetime_columns = ["order_purchase_timestamp", "order_delivered_customer_date", "order_estimated_delivery_date"]
